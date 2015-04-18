@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public abstract class SortedMap<K extends Comparable<K>,V> implements Unit{
 
-    private Tree keyTree;
+    protected Tree keyTree;
 
     /**
      * Добавляет связку ключ-значение
