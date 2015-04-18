@@ -38,8 +38,8 @@ public abstract class SortedList<T extends Comparable<T>> implements Unit {
      * и далее вызов функции next выдает элементы по возрастанию по возрастанию
      */
     public abstract class Iterator {
-        private T value;
-        private Tree.Node<T> current;// or may be next
+        protected T value;
+        protected Tree.Node<T> current;// or may be next
 
         protected Iterator(Tree.Node<T> node){
             value = node.getKey();
