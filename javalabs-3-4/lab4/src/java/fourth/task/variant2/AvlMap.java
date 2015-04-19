@@ -1,7 +1,6 @@
 package fourth.task.variant2;
 
 import fourth.instruments.SortedMap;
-import labs.fourth.instrument.Tree;
 
 import java.util.List;
 import java.util.Set;
@@ -11,53 +10,11 @@ import java.util.Set;
  */
 public class AvlMap extends SortedMap {
 
-    private MapEntry root = null;
-    int NumberOfNodes = 0;
+    protected CTree keyTree;
 
     @Override
     public void put(Comparable key, Object value) {
-        MapEntry tmpNode = null;
 
-        if (root == null) // если элементов в дереве нет
-        {
-           MapEntry newNode; // то инициализируем новый элемент
-           root = newNode;                   // и делаем его корнем
-           NumberOfNodes++;
-           return;
-        }
-        else              // если в дереве уже есть элементы
-        {
-            tmpNode = root;// ставим указатель на начало
-            while (true)   // и проверяем элементы, пока не найдем подходящее место
-            {
-                if (tmpNode->value < value)							// спускаемся в левое звено
-                {
-                    if (tmpNode == null)						// если дерево кончилось
-                    {
-                        MapEntry newNode = tmpNode;	// то создаем новый элемент
-                        tmpNode->left = newNode;
-                        NumberOfNodes++;
-                        return true;						// и успешно выходим из функции
-                    }
-                    else											// иначе спускаемся дальше
-                        tmpNode = tmpNode->left;
-                }
-                else if (tmpNode->value > value)					// спускаемся в правое звено
-                {
-                    if (tmpNode->right == NULL)						// если дерево кончилось
-                    {
-                        Node *newNode = new Node(value, tmpNode);   // то создаем новый элемент
-                        tmpNode->right = newNode;
-                        NumberOfNodes++;
-                        return true;						// и успешно выходим из функции
-                    }
-                    else											// иначе спускаемся дальше
-                        tmpNode = tmpNode->right;
-                }
-                else				// если элементы оказались равно
-                    return false;	// с ошибкой выходим из функции
-            }
-        }
     }
 
     @Override
@@ -77,28 +34,21 @@ public class AvlMap extends SortedMap {
 
     @Override
     public List getValues() {
-        List result = null;
-
-        return result;
+        return null;
     }
 
     @Override
     public int UnitNumber() {
-        return 4;
+        return 0;
     }
 
     @Override
     public String FIO() {
-        return "Федин Михаил Андреевич";
+        return null;
     }
 
     @Override
     public String GroupNumber() {
-        return "ИИБ-2-14";
+        return null;
     }
-
-    public static void main(){
-
-    }
-
 }
