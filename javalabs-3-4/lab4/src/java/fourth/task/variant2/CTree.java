@@ -2,6 +2,10 @@ package fourth.task.variant2;
 
 import labs.fourth.instrument.Tree;
 
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  * Created by Dartaan on 14.04.2015.
  */
@@ -299,6 +303,20 @@ public class CTree<K extends Comparable<K>> implements Tree {
         fixHeight(root);
     }
 
+    public Set returnAll(){
+        Set set = new TreeSet();
+        returnAll(set, root);
+        return set;
+    }
+
+    private void returnAll(Set set, CNode root){
+        if (root == null)
+            return;
+        returnAll(set, root.left);
+        set.add(root.key);
+        returnAll(set, root.right);
+    }
+
     public class CNode implements Node, Comparable<CNode> {
 
         private Comparable key;
@@ -393,11 +411,11 @@ public class CTree<K extends Comparable<K>> implements Tree {
 
         @Override
         public int compareTo(CNode Node) {
-            return this.getKey().compareTo(Node.getKey());
+            return this.key.compareTo(Node.key);
         }
 
         public int compareTo(Comparable o) {
-            return this.getKey().compareTo(o);
+            return this.key.compareTo(o);
         }
     }
 }
