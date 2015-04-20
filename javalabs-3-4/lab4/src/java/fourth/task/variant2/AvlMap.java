@@ -1,9 +1,10 @@
 package fourth.task.variant2;
 
+import fourth.instruments.CTree;
 import fourth.instruments.SortedMap;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 /**
@@ -12,6 +13,66 @@ import java.util.Set;
     public class AvlMap extends SortedMap {
 
     CTree keyTree;
+
+    AvlMap() {
+        keyTree = new CTree();
+    }
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        AvlMap test = new AvlMap();
+        int command, key;
+        Object value;
+
+        test.printUnit();
+        for (; ; ) {
+            System.out.println("Выберите действие\n" +
+                    "1. Добавить элемент\n" +
+                    "2. Получить значение по указанному ключу\n" +
+                    "3. Удалить элемент с указанным ключом\n" +
+                    "4. Вывести все ключи\n" +
+                    "5. Вывести все значения\n" +
+                    "0. Выход");
+            command = in.nextInt();
+            switch (command) {
+                case 1:
+                    System.out.println("Введите ключ и значение");
+                    key = in.nextInt();
+                    value = in.nextInt();
+                    test.put(key, value);
+                    break;
+                case 2:
+                    System.out.println("Введите ключ");
+                    key = in.nextInt();
+                    value = test.get(key);
+                    if (value == null)
+                        System.out.println("Элемента с таким ключем нет");
+                    else
+                        System.out.println("Ключ: " + key + " значение:" + value);
+                    break;
+                case 3:
+                    System.out.println("Введите ключ");
+                    key = in.nextInt();
+                    value = test.remove(key);
+                    if (value == null)
+                        System.out.println("Элемента с таким ключем нет");
+                    else
+                        System.out.println("Ключ: " + key + " значение:" + value);
+                    break;
+                case 4:
+                    System.out.println(test.getKeys());
+                    break;
+                case 5:
+                    System.out.println(test.getValues());
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Ошибка ввода");
+                    break;
+            }
+        }
+    }
 
     @Override
     /**
@@ -31,7 +92,8 @@ import java.util.Set;
      * @return значение
      */
     public Object get(Comparable key) {
-        return keyTree.find(key);
+        MapEntry tmp = new MapEntry(key, null);
+        return keyTree.find(tmp);
     }
 
     @Override
@@ -41,7 +103,8 @@ import java.util.Set;
      * @return удаленное значение, если связки нет, то возвращает null
      */
     public Object remove(Comparable key) {
-        return keyTree.delete(key);
+        MapEntry tmp = new MapEntry(key, null);
+        return keyTree.delete(tmp);
     }
 
     @Override
@@ -50,8 +113,8 @@ import java.util.Set;
      * @return множество ключей
      */
     public Set getKeys() {
-        Set result = keyTree.returnAll();
-        return null;
+        Set result = keyTree.returnKeys();
+        return result;
     }
 
     @Override
@@ -60,9 +123,8 @@ import java.util.Set;
      * @return список значений
      */
     public List getValues() {
-        ArrayList ValueList;
-
-        return null;
+        List result = keyTree.returnValues();
+        return result;
     }
 
     @Override
@@ -80,14 +142,9 @@ import java.util.Set;
         return "ИИБ-2-14";
     }
 
-    public void testFuntions(){
-
-    }
-
-    public static void main(){
-        for (;;){
-            System.out.println("Выберите действие/n 1. Добавить элемент/n 2. Удалить элемент/n 3. Вывести все элементы/n 0. Выход/n");
-            break;
-        }
+    public void printUnit() {
+        System.out.println(UnitNumber());
+        System.out.println(FIO());
+        System.out.println(GroupNumber());
     }
 }
