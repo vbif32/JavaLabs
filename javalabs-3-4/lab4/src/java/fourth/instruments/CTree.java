@@ -1,10 +1,8 @@
-package fourth.task.variant2;
+package fourth.instruments;
 
 import labs.fourth.instrument.Tree;
 
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by Dartaan on 14.04.2015.
@@ -61,12 +59,10 @@ public class CTree<K extends Comparable<K>> implements Tree {
     @Override
     public Node insert(Comparable var1) {
         CNode newNode;
-        if (root == null) {
-            newNode = new CNode(var1);
-        }
-        else {
+        if (root == null)
+            root = newNode = new CNode(var1);
+        else
             newNode = insert(var1, root);
-        }
         balance(newNode);
         return newNode;
     }
@@ -228,11 +224,25 @@ public class CTree<K extends Comparable<K>> implements Tree {
     }
 
     int balanceFactor(CNode node) {
-        return node.right.height - node.left.height;
+        if (node.left == null && node.right == null)
+            return 0;
+        else if (node.left == null)
+            return node.right.height ;
+        else if (node.right == null)
+            return node.left.height;
+        else
+            return node.right.height - node.left.height;
     }
 
     void fixHeight( CNode node) {
-        node.height = (byte)(Math.max(node.left.height, node.right.height) + 1);
+        if (node.left == null && node.right == null)
+            node.height = 0;
+        else if (node.left == null)
+            node.height = (byte)(node.right.height + 1);
+        else if (node.right == null)
+            node.height = (byte)(node.left.height + 1);
+        else
+            node.height = (byte)(Math.max(node.left.height, node.right.height) + 1);
     }
 
     private void leftTurn(CNode root) {
@@ -303,19 +313,37 @@ public class CTree<K extends Comparable<K>> implements Tree {
         fixHeight(root);
     }
 
-    public Set returnAll(){
+    public Set returnKeys(){
         Set set = new TreeSet();
-        returnAll(set, root);
+        returnKeys(set, root);
         return set;
     }
 
-    private void returnAll(Set set, CNode root){
+    private void returnKeys(Set set, CNode root){
         if (root == null)
             return;
-        returnAll(set, root.left);
-        set.add(root.key);
-        returnAll(set, root.right);
+        returnKeys(set, root.left);
+        SortedMap.MapEntry tmp = (SortedMap.MapEntry)(root.key);
+        set.add(tmp.getKey());
+        returnKeys(set, root.right);
     }
+
+    public List returnValues(){
+        List list = new ArrayList();
+        returnValues(list, root);
+        Collections.reverse(list);
+        return list;
+    }
+
+    private void returnValues(List list, CNode root){
+        if (root == null)
+            return;
+        returnValues(list, root.left);
+        SortedMap.MapEntry tmp = (SortedMap.MapEntry)(root.key);
+        list.add(tmp.getValue());
+        returnValues(list, root.right);
+    }
+
 
     public class CNode implements Node, Comparable<CNode> {
 
@@ -369,18 +397,6 @@ public class CTree<K extends Comparable<K>> implements Tree {
         public Comparable getKey() {
             return key;
         }
-        @Override
-        public CNode getLeft() {
-            return left;
-        }
-        @Override
-        public CNode getRight() {
-            return right;
-        }
-        @Override
-        public CNode getParent() {
-            return parent;
-        }
 
         @Override
         public void setKey(Object var1) {
@@ -388,13 +404,30 @@ public class CTree<K extends Comparable<K>> implements Tree {
         }
 
         @Override
+        public CNode getLeft() {
+            return left;
+        }
+
+        @Override
         public void setLeft(Node node) {
             left = (CNode) node;
         }
+
+        @Override
+        public CNode getRight() {
+            return right;
+        }
+
         @Override
         public void setRight(Node node) {
             right = (CNode) node;
         }
+
+        @Override
+        public CNode getParent() {
+            return parent;
+        }
+
         @Override
         public void setParent(Node node) {
             parent = (CNode) node;
@@ -415,7 +448,7 @@ public class CTree<K extends Comparable<K>> implements Tree {
         }
 
         public int compareTo(Comparable o) {
-            return this.key.compareTo(o);
+            return this.getKey().compareTo(o);
         }
     }
 }
