@@ -26,6 +26,7 @@ import java.util.Set;
 
         test.printUnit();
         for (; ; ) {
+            System.out.println("Значения: " + test.getValues());
             System.out.println("Выберите действие\n" +
                     "1. Добавить элемент\n" +
                     "2. Получить значение по указанному ключу\n" +
@@ -42,13 +43,12 @@ import java.util.Set;
                     test.put(key, value);
                     break;
                 case 2:
-                    System.out.println("Введите ключ");
                     key = in.nextInt();
                     value = test.get(key);
                     if (value == null)
                         System.out.println("Элемента с таким ключем нет");
                     else
-                        System.out.println("Ключ: " + key + " значение:" + value);
+                        System.out.println("Найден ключ: " + key + "  со значением:" + value);
                     break;
                 case 3:
                     System.out.println("Введите ключ");
@@ -57,13 +57,13 @@ import java.util.Set;
                     if (value == null)
                         System.out.println("Элемента с таким ключем нет");
                     else
-                        System.out.println("Ключ: " + key + " значение:" + value);
+                        System.out.println("Удален ключ: " + key + " со значением:" + value);
                     break;
                 case 4:
-                    System.out.println(test.getKeys());
+                    System.out.println("Ключи: " + test.getKeys());
                     break;
                 case 5:
-                    System.out.println(test.getValues());
+                    System.out.println("Значения: " + test.getValues());
                     break;
                 case 0:
                     return;
@@ -75,53 +75,36 @@ import java.util.Set;
     }
 
     @Override
-    /**
-     * Добавляет связку ключ-значение
-     * @param key ключ по которому можно будет обратиться к значению
-     * @param value значение
-     */
     public void put(Comparable key, Object value) {
-        MapEntry newNode = new MapEntry(key, value);
-        keyTree.insert(newNode);
+        if (get(key) == null) {
+            MapEntry newNode = new MapEntry(key, value);
+            keyTree.insert(newNode);
+            System.out.println("Добавлен ключ: " + key + " со значением:" + value);
+        } else
+            System.out.println("Такой ключ уже есть");
     }
 
     @Override
-    /**
-     * Выдает значение под ключу
-     * @param key ключ
-     * @return значение
-     */
     public Object get(Comparable key) {
         MapEntry tmp = new MapEntry(key, null);
         return keyTree.find(tmp);
     }
 
     @Override
-    /**
-     * Удаляет значение по ключу
-     * @param key ключ
-     * @return удаленное значение, если связки нет, то возвращает null
-     */
     public Object remove(Comparable key) {
+        if (get(key) == null)
+            return null;
         MapEntry tmp = new MapEntry(key, null);
         return keyTree.delete(tmp);
     }
 
     @Override
-    /**
-     * Возвращает все ключи отсортированные по возрастанию
-     * @return множество ключей
-     */
     public Set getKeys() {
         Set result = keyTree.returnKeys();
         return result;
     }
 
     @Override
-    /**
-     * Возвращает все значения отсортированные по ключу
-     * @return список значений
-     */
     public List getValues() {
         List result = keyTree.returnValues();
         return result;

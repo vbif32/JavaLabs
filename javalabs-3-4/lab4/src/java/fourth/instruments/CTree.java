@@ -10,8 +10,9 @@ import java.util.*;
 
 public class CTree<K extends Comparable<K>> implements Tree {
 
-    CNode root = null;
-
+    private int numberOfNodes = 0;
+    private CNode root = null;
+    private CNode deepestBalancedNode = null;
 //    @Override
 //    public Node insert(Comparable var1) {
 //
@@ -59,11 +60,13 @@ public class CTree<K extends Comparable<K>> implements Tree {
     @Override
     public Node insert(Comparable var1) {
         CNode newNode;
-        if (root == null)
+        if (root == null) {
             root = newNode = new CNode(var1);
-        else
+            root = newNode;
+        } else
             newNode = insert(var1, root);
-        balance(newNode);
+        numberOfNodes++;
+        balance();
         return newNode;
     }
 
@@ -82,16 +85,13 @@ public class CTree<K extends Comparable<K>> implements Tree {
             return find(var1, root);
     }
 
-
     private CNode insert(Comparable var1, CNode root) {
-        if (root == null)
-            return null;
-        if (root.compareTo(var1) < 0)                        // если меньше
+        if (root.compareTo(var1) > 0)                        // если рут больше вставляемого
             if (root.left != null)                              // и есть левый ребенок
                 return insert(var1, root.left);                    // идем в левое поддерево
             else                                                // иначе
                 return root.left = new CNode(var1, root);      // добавляем сюда элемент
-        else if (root.compareTo(var1) > 0)                        // если больше
+        else if (root.compareTo(var1) < 0)                        // если рут меньше вставляемого
             if (root.right != null)                             // и есть правый ребенок
                 return insert(var1, root.right);                // идем в правое поддерево
             else                                                // иначе
@@ -140,11 +140,17 @@ public class CTree<K extends Comparable<K>> implements Tree {
                     root.left.parent = root.parent;
                 }
             } else {                                                // есть оба доч. элемента
-                if (root.right.left != null) {
+                if (root.right.left == null) {
+                    root.right.left = root.left;
+                    root.left.parent = root.right;
                     if (root.parent == null) {
                         this.root = root.right;
+
+                        root.left.parent = root.right;
+                        root.right.left = root.left;
+
                         root.right.parent = null;
-                    } else if (root.parent.left == root) {
+                    } else if (root.isLeftСhild()) {
                         root.parent.left = root.right;
                         root.right.parent = root.parent;
                     } else {
@@ -152,21 +158,23 @@ public class CTree<K extends Comparable<K>> implements Tree {
                         root.right.parent = root.parent;
                     }
                 } else {
+                    CNode tmp = findLeftmostNode(root.right);
+                    tmp.left = root.left;
+                    tmp.right = root.right;
+                    tmp.parent = root.parent;
                     if (root.parent == null) {
-                        this.root = root.right;
-
+                        this.root = tmp;
                     } else if (root.parent.left == root) {
-                        CNode tmp = findLeftmostNode(root.right);
                         root.parent.left = tmp;
                         tmp.parent = root.parent;
                     } else {
-                        CNode tmp = findLeftmostNode(root.right);
                         root.parent.right = tmp;
                         tmp.parent = root.parent;
                     }
                 }
             }
-            balance(root);
+            numberOfNodes--;
+            balance();
             return root;
         }
         return null;
@@ -174,10 +182,11 @@ public class CTree<K extends Comparable<K>> implements Tree {
 
     private CNode findLeftmostNode(CNode root) { // вспомогательная функция для удаления
         if (root.left == null) {
-            root.right.parent = root.parent;
-            root.right = null;
+            if (root.right != null)
+                root.right.parent = root.parent;
             if (root.parent != null)
                 root.parent.left = root.right;
+            root.right = null;
             return root;
         } else
             return findLeftmostNode(root.left);
@@ -186,61 +195,59 @@ public class CTree<K extends Comparable<K>> implements Tree {
     private Node find(Comparable var1, CNode root) {
         if (root == null)
             return null;
-        if (root.compareTo(var1) < 0)                        // если меньше
-            return insert(var1, root.left);                    // идем в левое поддерево
-        else if (root.compareTo(var1) > 0)                        // если больше
-            return insert(var1, root.right);                // идем в правое поддерево
+        if (root.compareTo(var1) > 0)                        // если меньше
+            return find(var1, root.left);                    // идем в левое поддерево
+        else if (root.compareTo(var1) < 0)                        // если больше
+            return find(var1, root.right);                // идем в правое поддерево
         else                                                    // если равно
             return root;                                        // значит нашли
     }
 
-
-    private boolean balance(CNode node) {
-        if (allowedToBalance()) {
+    private boolean balance() {
+        if (allowedToBalance() && !check_balance()) {
             treeToVine(root);
             while (!check_balance()) {
                 vineToBalancedTree(root);
             }
-            DeepestBalancedNode = NULL;
+            deepestBalancedNode = null;
             return true;
-        }
-        else
+        } else
             return false;
     }
 
-    boolean allowedToBalance() {
-        for (int i = 0; i < NumberOfNodes; i++) {
-            if (NumberOfNodes == pow(2, i) - 1)
+    private boolean allowedToBalance() {
+        for (int i = 0; i < numberOfNodes; i++) {
+            if (numberOfNodes == Math.pow(2, i) - 1)
                 return true;
         }
         return false;
     }
 
-
-    void treeToVine(CNode root) {
-        if (root -> right != NULL) {
+    private void treeToVine(CNode root) {
+        if (root.right != null) {
             leftTurn(root);
-            treeToVine(root -> parent);
-        } else if (root -> left != NULL) {
-            treeToVine(root -> left);
+            treeToVine(root.parent);
+        } else if (root.left != null) {
+            treeToVine(root.left);
         }
     }
 
-    void vineToBalancedTree(CNode root) {
-        if (root -> left != DeepestBalancedNode) {
-            rightTurn(root);
-            vineToBalancedTree(root -> parent -> left);
-        }
-        else {
-            DeepestBalancedNode = root;
+    private void vineToBalancedTree(CNode root) {
+        if (root != null) {
+            if (root.left != deepestBalancedNode) {
+                rightTurn(root);
+                vineToBalancedTree(root.parent.left);
+            } else {
+                deepestBalancedNode = root;
+            }
         }
     }
 
-    boolean check_balance() {
+    private boolean check_balance() {
         return check_balance(this.root);
     }
 
-    boolean check_balance(CNode root) {
+    private boolean check_balance(CNode root) {
         if (root == null)
             return true;
         if (!check_balance(root.left))
@@ -254,7 +261,7 @@ public class CTree<K extends Comparable<K>> implements Tree {
         return true;
     }
 
-    int getHight(CNode root) {
+    private int getHight(CNode root) {
         if (root == null)
             return 0;
         int left = getHight(root.left);
@@ -266,20 +273,18 @@ public class CTree<K extends Comparable<K>> implements Tree {
         if (root.right != null) {
             if (root != this.root) {
 
-                if (root.isLeftСhild())
-                    root.parent.left = root.right;
-                else
-                    root.parent.right = root.right;
-
+                root.parent.left = root.right;
                 root.right.parent = root.parent;
-                root.parent = root.right;
 
+                root.parent = root.right;
                 root.right = root.parent.left;
+
                 if (root.right != null)
                     root.right.parent = root;
 
                 root.parent.left = root;
             } else {
+
                 root.parent = root.right;
                 root.right = root.parent.left;
                 if (root.right != null)
@@ -296,21 +301,17 @@ public class CTree<K extends Comparable<K>> implements Tree {
     private void rightTurn(CNode root) {
         if (root.left != null) {
             if (root != this.root) {
-                if (root.isLeftСhild())
-                    root.parent.left = root.left;
-                else
-                    root.parent.right = root.left;
-
+                root.parent.left = root.left;
                 root.left.parent = root.parent;
 
                 root.parent = root.left;
-
                 root.left = root.parent.right;
-                if (root.left != null)
-                    root.left.parent = root;
+                if (root.left != null) root.left.parent = root;
 
                 root.parent.right = root;
+
             } else {
+
                 root.parent = root.left;
                 root.left = root.parent.right;
                 if (root.left != null)
@@ -323,7 +324,6 @@ public class CTree<K extends Comparable<K>> implements Tree {
             }
         }
     }
-
 
     public Set returnKeys() {
         Set set = new HashSet();
@@ -350,10 +350,10 @@ public class CTree<K extends Comparable<K>> implements Tree {
     private void returnValues(List list, CNode root) {
         if (root == null)
             return;
-        returnValues(list, root.right);
+        returnValues(list, root.left);
         SortedMap.MapEntry tmp = (SortedMap.MapEntry) (root.key);
         list.add(tmp.getValue());
-        returnValues(list, root.left);
+        returnValues(list, root.right);
     }
 
 
@@ -461,6 +461,11 @@ public class CTree<K extends Comparable<K>> implements Tree {
 
         public int compareTo(Comparable o) {
             return this.getKey().compareTo(o);
+        }
+
+        @Override
+        public String toString() {
+            return (this.key.toString());
         }
     }
 }

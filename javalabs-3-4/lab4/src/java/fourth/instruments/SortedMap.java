@@ -80,5 +80,12 @@ public abstract class SortedMap<K extends Comparable<K>,V> implements Unit{
         public int compareTo(MapEntry o) {
             return this.getKey().compareTo(o.getKey());
         }
+
+        @Override
+        public String toString() {
+            StringBuilder bld = new StringBuilder();
+            bld.append(this.key + ": " + this.value);
+            return bld.toString();
+        }
     }
 }
