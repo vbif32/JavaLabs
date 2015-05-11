@@ -83,9 +83,7 @@ public abstract class SortedMap<K extends Comparable<K>,V> implements Unit{
 
         @Override
         public String toString() {
-            StringBuilder bld = new StringBuilder();
-            bld.append(this.key + ": " + this.value);
-            return bld.toString();
+            return (this.key + ": " + this.value);
         }
     }
 }

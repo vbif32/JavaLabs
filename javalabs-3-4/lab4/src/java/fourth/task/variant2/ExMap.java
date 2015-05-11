@@ -2,6 +2,7 @@ package fourth.task.variant2;
 
 import fourth.Tree.BinaryTree;
 import fourth.instruments.SortedMap;
+import labs.fourth.instrument.Tree;
 
 import java.util.List;
 import java.util.Scanner;
@@ -10,19 +11,20 @@ import java.util.Set;
 /**
  * Created by Dartaan on 14.04.2015.
  */
-public class AvlMap extends SortedMap {
+    public class ExMap<K extends Comparable<K>, V> extends SortedMap<K, V> {
 
-    private BinaryTree keyTree;
+    BinaryTree keyTree;
 
-    AvlMap() {
+    ExMap() {
         keyTree = new BinaryTree();
     }
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        AvlMap test = new AvlMap();
-        int command, key;
-        Object value;
+        ExMap <Integer,String> test = new ExMap<>();
+        int command;
+        int key;
+        String value;
 
         test.printUnit();
         for (; ; ) {
@@ -39,7 +41,7 @@ public class AvlMap extends SortedMap {
                 case 1:
                     System.out.println("Введите ключ и значение");
                     key = in.nextInt();
-                    value = in.nextInt();
+                    value = in.next();
                     test.put(key, value);
                     break;
                 case 2:
@@ -75,7 +77,7 @@ public class AvlMap extends SortedMap {
     }
 
     @Override
-    public void put(Comparable key, Object value) {
+    public void put(K key, V value) {
         if (get(key) == null) {
             MapEntry newNode = new MapEntry(key, value);
             keyTree.insert(newNode);
@@ -85,17 +87,25 @@ public class AvlMap extends SortedMap {
     }
 
     @Override
-    public Object get(Comparable key) {
+    public V get(K key) {
         MapEntry tmp = new MapEntry(key, null);
-        return keyTree.find(tmp);
+        Tree.Node tmpNode = (keyTree.find(tmp));
+        V result = null;
+        if (tmpNode!= null)
+            result = ((MapEntry) tmpNode.getKey()).getValue();
+        return result;
     }
 
     @Override
-    public Object remove(Comparable key) {
+    public V remove(K key) {
         if (get(key) == null)
             return null;
         MapEntry tmp = new MapEntry(key, null);
-        return keyTree.delete(tmp);
+        Tree.Node tmpNode = (keyTree.delete(tmp));
+        V result = null;
+        if (tmpNode!= null)
+            result = ((MapEntry) tmpNode.getKey()).getValue();
+        return result;
     }
 
     @Override
