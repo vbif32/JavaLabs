@@ -73,7 +73,9 @@ public class BinaryTree<K extends Comparable<K>> implements Tree<K> {
     public Node delete(K var1) {
         if (root == null)
             return null;
-        return delete(var1, root);
+        Node tmpNode = delete(var1, root);
+        balance();
+        return tmpNode;
     }
 
     @Override
@@ -82,6 +84,18 @@ public class BinaryTree<K extends Comparable<K>> implements Tree<K> {
             return null;
         } else
             return find(var1, root);
+    }
+
+    public Set returnKeys() {
+        Set set = new HashSet();
+        returnKeys(set, root);
+        return set;
+    }
+
+    public List returnValues() {
+        List list = new ArrayList();
+        returnValues(list, root);
+        return list;
     }
 
     protected Node insert(K var1, Node root) {
@@ -177,7 +191,6 @@ public class BinaryTree<K extends Comparable<K>> implements Tree<K> {
                 }
             }
             numberOfNodes--;
-            balance();
             return root;
         }
         return null;
@@ -206,46 +219,6 @@ public class BinaryTree<K extends Comparable<K>> implements Tree<K> {
             return root;                                        // значит нашли
     }
 
-    protected boolean balance() {
-        if (allowedToBalance() && !check_balance()) {
-            treeToVine(root);
-            while (!check_balance()) {
-                vineToBalancedTree(root);
-            }
-            deepestBalancedNode = null;
-            return true;
-        } else
-            return false;
-    }
-
-    private boolean allowedToBalance() {
-        for (int i = 0; i < numberOfNodes; i++) {
-            if (numberOfNodes == Math.pow(2, i) - 1)
-                return true;
-        }
-        return false;
-    }
-
-    private void treeToVine(Node root) {
-        if (root.getRight() != null) {
-            leftTurn(root);
-            treeToVine(root.getParent());
-        } else if (root.getLeft() != null) {
-            treeToVine(root.getLeft());
-        }
-    }
-
-    private void vineToBalancedTree(Node root) {
-        if (root != null) {
-            if (root.getLeft() != deepestBalancedNode) {
-                rightTurn(root);
-                vineToBalancedTree(root.getParent().getLeft());
-            } else {
-                deepestBalancedNode = root;
-            }
-        }
-    }
-
     protected boolean check_balance() {
         return check_balance(this.root);
     }
@@ -257,19 +230,19 @@ public class BinaryTree<K extends Comparable<K>> implements Tree<K> {
             return false;
         if (!check_balance(root.getRight()))
             return false;
-        int left = getHight(root.getLeft());
-        int right = getHight(root.getRight());
+        int left = getHeight(root.getLeft());
+        int right = getHeight(root.getRight());
         if (Math.abs(left - right) > 1)
             return false;
         return true;
     }
 
-    protected int getHight(Node root) {
+    protected int getHeight(Node root) {
         if (root == null)
             return 0;
-        int left = getHight(root.getLeft());
-        int right = getHight(root.getRight());
-        return Math.max(left, right) + 1;
+        int left = getHeight(root.getLeft());
+        int right = getHeight(root.getRight());
+        return Math.max(left, right);
     }
 
     protected void leftTurn(Node root) {
@@ -329,12 +302,6 @@ public class BinaryTree<K extends Comparable<K>> implements Tree<K> {
         }
     }
 
-    public Set returnKeys() {
-        Set set = new HashSet();
-        returnKeys(set, root);
-        return set;
-    }
-
     protected void returnKeys(Set set, Node root) {
         if (root == null)
             return;
@@ -344,12 +311,6 @@ public class BinaryTree<K extends Comparable<K>> implements Tree<K> {
         returnKeys(set, root.getLeft());
     }
 
-    public List returnValues() {
-        List list = new ArrayList();
-        returnValues(list, root);
-        return list;
-    }
-
     protected void returnValues(List list, Node root) {
         if (root == null)
             return;
@@ -357,6 +318,46 @@ public class BinaryTree<K extends Comparable<K>> implements Tree<K> {
         fourth.instruments.SortedMap.MapEntry tmp = (fourth.instruments.SortedMap.MapEntry) (root.getKey());
         list.add(tmp.getValue());
         returnValues(list, root.getRight());
+    }
+
+    private boolean balance() {
+        if (allowedToBalance() && !check_balance()) {
+            treeToVine(root);
+            while (!check_balance()) {
+                vineToBalancedTree(root);
+            }
+            deepestBalancedNode = null;
+            return true;
+        } else
+            return false;
+    }
+
+    private boolean allowedToBalance() {
+        for (int i = 0; i < numberOfNodes; i++) {
+            if (numberOfNodes == Math.pow(2, i) - 1)
+                return true;
+        }
+        return false;
+    }
+
+    private void treeToVine(Node root) {
+        if (root.getRight() != null) {
+            leftTurn(root);
+            treeToVine(root.getParent());
+        } else if (root.getLeft() != null) {
+            treeToVine(root.getLeft());
+        }
+    }
+
+    private void vineToBalancedTree(Node root) {
+        if (root != null) {
+            if (root.getLeft() != deepestBalancedNode) {
+                rightTurn(root);
+                vineToBalancedTree(root.getParent().getLeft());
+            } else {
+                deepestBalancedNode = root;
+            }
+        }
     }
 
 

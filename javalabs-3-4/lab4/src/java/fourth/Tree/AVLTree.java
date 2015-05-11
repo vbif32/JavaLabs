@@ -1,9 +1,5 @@
 package fourth.Tree;
 
-
-/**
- * Created by Dartaan on 07.05.2015.
- */
 public class AVLTree<K extends Comparable<K>> extends BinaryTree<K> {
 
     @Override
@@ -16,7 +12,7 @@ public class AVLTree<K extends Comparable<K>> extends BinaryTree<K> {
             newNode = new AVLNode(insert(var1, root));
             ((AVLNode)newNode).fixRelations();
         }
-        balance();
+        balance(newNode);
         return newNode;
     }
 
@@ -24,8 +20,10 @@ public class AVLTree<K extends Comparable<K>> extends BinaryTree<K> {
     public Node delete(K var1) {
         if (root == null)
             return null;
-        return
-                delete(var1, root);
+        Node tmpNode = new AVLNode(delete(var1, root));
+        ((AVLNode)tmpNode).fixRelations();
+        balance(tmpNode);
+        return tmpNode;
     }
 
     @Override
@@ -36,61 +34,74 @@ public class AVLTree<K extends Comparable<K>> extends BinaryTree<K> {
             return super.find(var1, root);
     }
 
-    protected boolean balance(Node node){
-        return false;
+    protected void balance(Node node) {
+        ((AVLNode) node).fixBalanceFactor();
+        if (((AVLNode) node).getBalanceFactor() == 2) {
+
+            if ( node.getRight() != null && ((AVLNode) node.getRight()).getBalanceFactor() < 0) {
+                rightTurn(node.getRight());
+            }
+            leftTurn(node);
+            return;
+        }
+        if ( ((AVLNode) node).getBalanceFactor() == -2) {
+
+            if ( node.getLeft() != null && ((AVLNode) node.getLeft()).getBalanceFactor() > 0) {
+                leftTurn(node.getLeft());
+            }
+            rightTurn(node);
+            return;
+        }
+        return;
     }
 
     public class AVLNode<K extends Comparable<K>> extends BinaryNode<K> {
 
-        private int height;
+        private int balanceFactor;
 
         public AVLNode() {
             super();
-            height = 0;
+            balanceFactor = 0;
         }
 
         public AVLNode(Node node){
             super((K)node.getKey(), node.getLeft(), node.getRight(), node.getParent());
-            height = 0;
+            balanceFactor = 0;
         }
 
         public AVLNode(Node node, int var1){
             super((K)node.getKey(), node.getLeft(), node.getRight(), node.getParent());
-            height = var1;
+            balanceFactor = var1;
         }
 
         public AVLNode(K var1) {
             super(var1);
-            height = 0;
+            balanceFactor = 0;
         }
 
         public AVLNode(K var1, Node var2) {
             super(var1, var2);
-            height = 0;
+            balanceFactor = 0;
         }
 
         public AVLNode(K var1, Node var2, Node var3) {
             super(var1, var2, var3);
-            height = 0;
+            balanceFactor = 0;
         }
 
         public AVLNode(K var1, Node var2, Node var3, Node var4) {
             super(var1, var2, var3, var4);
-            height = 0;
+            balanceFactor = 0;
         }
 
         public AVLNode(K var1, Node var2, Node var3, Node var4, int var5) {
             super(var1, var2, var3, var4);
-            height = var5;
-        }
-
-        public int getHeight(){
-            return height;
+            balanceFactor = var5;
         }
 
         protected void fixRelations(){
             if(getParent() != null)
-                if (isLeft—hild())
+                if (isLeft–°hild())
                     getParent().setLeft(this);
                 else
                     getParent().setRight(this);
@@ -98,10 +109,15 @@ public class AVLTree<K extends Comparable<K>> extends BinaryTree<K> {
                 getLeft().setParent(this);
             if (getRight() != null)
                 getRight().setParent(this);
+            fixBalanceFactor();
         }
 
-        public void setHeight(int var1){
-            height = var1;
+        private int getBalanceFactor(){
+            return balanceFactor;
+        }
+
+        public void fixBalanceFactor(){
+            balanceFactor = getHeight(right)- getHeight(left);
         }
 
         public int compareTo(Node Node) {
