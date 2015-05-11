@@ -59,44 +59,14 @@ public class AVLTree<K extends Comparable<K>> extends BinaryTree<K> {
 
         private int balanceFactor;
 
-        public AVLNode() {
-            super();
-            balanceFactor = 0;
-        }
-
         public AVLNode(Node node){
             super((K)node.getKey(), node.getLeft(), node.getRight(), node.getParent());
             balanceFactor = 0;
         }
 
-        public AVLNode(Node node, int var1){
-            super((K)node.getKey(), node.getLeft(), node.getRight(), node.getParent());
-            balanceFactor = var1;
-        }
-
         public AVLNode(K var1) {
             super(var1);
             balanceFactor = 0;
-        }
-
-        public AVLNode(K var1, Node var2) {
-            super(var1, var2);
-            balanceFactor = 0;
-        }
-
-        public AVLNode(K var1, Node var2, Node var3) {
-            super(var1, var2, var3);
-            balanceFactor = 0;
-        }
-
-        public AVLNode(K var1, Node var2, Node var3, Node var4) {
-            super(var1, var2, var3, var4);
-            balanceFactor = 0;
-        }
-
-        public AVLNode(K var1, Node var2, Node var3, Node var4, int var5) {
-            super(var1, var2, var3, var4);
-            balanceFactor = var5;
         }
 
         protected void fixRelations(){
