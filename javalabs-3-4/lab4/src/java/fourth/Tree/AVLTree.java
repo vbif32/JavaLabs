@@ -1,5 +1,7 @@
 package fourth.Tree;
 
+import java.util.List;
+
 public class AVLTree<K extends Comparable<K>> extends BinaryTree<K> {
 
     @Override
@@ -9,7 +11,7 @@ public class AVLTree<K extends Comparable<K>> extends BinaryTree<K> {
             newNode = new AVLNode(var1);
             root = newNode;
         } else {
-            newNode = new AVLNode(insert(var1, root));
+            newNode = new AVLNode(super.insert(var1, root));
             ((AVLNode)newNode).fixRelations();
         }
         balance(newNode);
@@ -20,7 +22,7 @@ public class AVLTree<K extends Comparable<K>> extends BinaryTree<K> {
     public Node delete(K var1) {
         if (root == null)
             return null;
-        Node tmpNode = new AVLNode(delete(var1, root));
+        Node tmpNode = new AVLNode(super.delete(var1, root));
         ((AVLNode)tmpNode).fixRelations();
         balance(tmpNode);
         return tmpNode;
