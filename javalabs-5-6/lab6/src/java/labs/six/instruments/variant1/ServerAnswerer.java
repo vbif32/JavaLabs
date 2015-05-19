@@ -1,5 +1,6 @@
 package labs.six.instruments.variant1;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -13,5 +14,5 @@ public interface ServerAnswerer {
      * @param query запрос
      * @param writeMe поток в который записывается ответ (файл с необходимой страницей)
      */
-    public void askMe(StringBuilder query, OutputStream writeMe);
+    public void askMe(StringBuilder query, OutputStream writeMe) throws IOException;
 }
