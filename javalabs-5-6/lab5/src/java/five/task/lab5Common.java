@@ -11,12 +11,12 @@ import java.util.List;
 /**
  * Created by Dartaan on 16.05.2015.
  */
-public class lab5Common {
+public class Lab5Common {
 
     private static String filePath = "javalabs-5-6/lab5/src/java/five/libs/lab51lib.jar";
 
     public static void main(String[] arg) throws IOException {
-        lab5Common test = new lab5Common();
+        Lab5Common test = new Lab5Common();
         JLoader testJLoader = new JLoader();
         List<Class> jarContent = testJLoader.loadJar(new File(filePath), true);
         System.out.println("==========================\n\n");
