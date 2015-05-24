@@ -3,6 +3,7 @@ package five.task;
 import sdc.jloader.JLoader;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.List;
@@ -12,13 +13,13 @@ import java.util.List;
  */
 public class lab5Common {
 
-    private static String filePath = "C:\\Users\\Dartaan\\IdeaProjects\\JavaLabs\\javalabs-5-6\\lab5\\src\\java\\five\\libs\\lab51lib.jar";
+    private static String filePath = "javalabs-5-6/lab5/src/java/five/libs/lab51lib.jar";
 
-    public static void main(String[] arg) {
+    public static void main(String[] arg) throws IOException {
         lab5Common test = new lab5Common();
         JLoader testJLoader = new JLoader();
         List<Class> jarContent = testJLoader.loadJar(new File(filePath), true);
-System.out.println("==========================\n\n");
+        System.out.println("==========================\n\n");
         for (int i = 0; i < jarContent.size(); i++)
             test.printClass(jarContent.get(i));
     }

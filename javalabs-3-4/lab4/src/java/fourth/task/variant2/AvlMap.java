@@ -22,7 +22,7 @@ public class AvlMap<K extends Comparable<K>, V> extends SortedMap<K, V> {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        AvlMap <Integer,String> test = new AvlMap<>();
+        AvlMap <Integer,String> test = new AvlMap();
         int command;
         int key;
         String value;
